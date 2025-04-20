@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Countdown</title>
+  <title>Access Panel</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     body {
@@ -11,49 +11,92 @@
       color: #fff;
       font-family: 'Share Tech Mono', monospace;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      flex-direction: column;
     }
     h1 {
       font-size: 1.2rem;
+      letter-spacing: 2px;
       margin-bottom: 1rem;
-      letter-spacing: 2px;
     }
-    #countdown {
-      font-size: 1.5rem;
-      letter-spacing: 2px;
+    input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #fff;
+      color: #fff;
+      font-size: 2rem;
+      font-family: inherit;
+      text-align: center;
+      width: 2rem;
+      margin: 0 0.3rem;
+      outline: none;
+    }
+    #link {
+      margin-top: 2rem;
+      display: none;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+    #link a {
+      color: #0ff;
+      text-decoration: none;
+    }
+    #link.show {
+      display: block;
+      animation: fadeIn 1s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <h1>initiating sequence...</h1>
-  <div id="countdown">Loading...</div>
+  <h1>ENTER ACCESS CODE</h1>
+  <div id="inputs">
+    <input type="text" maxlength="1">
+    <input type="text" maxlength="1">
+    <input type="text" maxlength="1">
+    <input type="text" maxlength="1">
+    <input type="text" maxlength="1">
+    <input type="text" maxlength="1">
+  </div>
+  <div id="link">
+    <a href="https://www.youtube.com/@batrachian-i6w6p" target="_blank">ACCESS GRANTED: ENTER</a>
+  </div>
 
   <script>
-    function updateCountdown() {
-      const targetDate = new Date('2025-04-25T23:11:00-07:00'); // Vancouver time (PDT)
-      const now = new Date();
+    const inputs = document.querySelectorAll('#inputs input');
+    const correctCode = ['7','7','5','7','5','4'];
+    const link = document.getElementById('link');
 
-      const diff = targetDate - now;
-      if (diff <= 0) {
-        document.getElementById("countdown").textContent = "ACCESS GRANTED.";
-        return;
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', () => {
+        // Auto focus to next input
+        if (input.value && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+        checkCode();
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    function checkCode() {
+      const entered = Array.from(inputs).map(i => i.value);
+      if (entered.join('') === correctCode.join('')) {
+        link.classList.add('show');
+      } else {
+        link.classList.remove('show');
       }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("countdown").textContent =
-        `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown(); // initial call
   </script>
 </body>
 </html>
